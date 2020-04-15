@@ -2,26 +2,31 @@
 #include "arguments.h"
 
 int main(int argc, char** argv) {
-    std::vector<option_t> engine_options = {
-        {"input-model-file", 'm', argument_requirement::REQUIRE_ARG, "--input-model-file <FILE> is the file of the model to parse and perform verification on"},
-        {"input-query-file", 'q', argument_requirement::REQUIRE_ARG, "--input-query-file <FILE> is the file containing queries"},
-        {"optimize-model"  , 'o', argument_requirement::OPTIONAL_ARG, "Applies optimizations of provided type: LTL (default), SUPREMUM, HENRIK"}
+    // Construct your cli flag options as a vector of option_t's
+    // The --help flag gets added automatically
+    std::vector<option_t> my_options = {
+    //   long name   |short| argument requirement             | Help description
+        {"flag"      , 'm', argument_requirement::NO_ARG      , "Flag with no argument"},
+        {"input-file", 'f', argument_requirement::REQUIRE_ARG , "Flag with a required argument"},
+        {"optimize"  , 'o', argument_requirement::OPTIONAL_ARG, "Flag with an optional argument"}
     };
-    auto cli_arguments = get_arguments(engine_options, argc, argv);
+    // Then call get_arguments
+    auto cli_arguments = get_arguments(my_options, argc, argv);
+    // If the help flag was provided, print out the help message
     if(cli_arguments["help"]) {
-        std::cout << "tta-verify version 0.0a - LICENSE\n  USAGE: tta-verify --input /path/to/file.json etc.\n\n";
-        print_argument_help(engine_options);
+        std::cout << "example_usage is a program that shows how to use libargvparse. Here are the possible options:\n\n";
+        print_argument_help(my_options);
         return EXIT_SUCCESS;
     }
-
-    if(cli_arguments["input-model-file"]) {
-        std::string input_file = cli_arguments["input-model-file"].as_string();
+    // You can test if an argument was provided by simply testing for the long name
+    if(cli_arguments["flag"]) {
+        // std::string flag_file = cli_arguments["flag"].as_string(); // Throws a runtime_exception, since there are no arguments on '--flag'
     }
-    if(cli_arguments["input-query-file"]) {
-        std::string query_file = cli_arguments["input-query-file"].as_string();
+    if(cli_arguments["input-file"]) {
+        std::string input_file = cli_arguments["input-file"].as_string();
     }
-    if(cli_arguments["optimize-model"]) {
+    if(cli_arguments["optimize"]) {
+        std::string optimize_strategy = cli_arguments["optimize"].as_string(); // Throws a runtime_exception if no flag was provided
     }
-
     return EXIT_SUCCESS;
 }

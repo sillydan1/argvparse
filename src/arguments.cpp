@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <algorithm>
 #include "arguments.h"
 
 argument_t::argument_t()

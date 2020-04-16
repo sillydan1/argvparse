@@ -5,7 +5,7 @@ A tiny C++ library for easier parsing of command line arguments
 
 Using argvparse is easy. You just define a list of desired arguments with a description and then you call `auto myargs = get_arguments(possible_arguments, argc, argv);`. You can then check if an argument has been provided by looking up the results like so: `myargs["long-name-look-up"]`. The result from `get_arguments` is a hashmap where the long name of the argument is the key.
 
-Longer example
+Longer example. This example is also available as a build target: `make example_usage`
 
 ```C++
 #include <iostream>

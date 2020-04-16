@@ -58,7 +58,12 @@ For uninstall
 xargs rm < install_manifest.txt
 ```
 
-Or just manually delete the files listed in `install_manifest.txt`.
+Or just manually delete the files listed in `install_manifest.txt`. They are likely these:
+
+```
+/usr/local/lib/libargvparse.so
+/usr/local/include/arguments.h
+```
 
 # Author(s)
 

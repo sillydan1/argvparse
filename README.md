@@ -59,3 +59,7 @@ xargs rm < install_manifest.txt
 ```
 
 Or just manually delete the files listed in `install_manifest.txt`.
+
+# Author(s)
+
+ - [sillydan1](https://github.com/sillydan1)

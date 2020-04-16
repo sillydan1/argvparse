@@ -1,3 +1,21 @@
+/**
+ * Copyright (C) 2020 Asger Gitz-Johansen
+
+   This file is part of libargvparse.
+
+    libargvparse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    libargvparse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with libargvparse.  If not, see <https://www.gnu.org/licenses/>.
+ */
 #include <iostream>
 #include "arguments.h"
 
@@ -14,7 +32,20 @@ int main(int argc, char** argv) {
     auto cli_arguments = get_arguments(my_options, argc, argv);
     // If the help flag was provided, print out the help message
     if(cli_arguments["help"]) {
-        std::cout << "example_usage is a program that shows how to use libargvparse. Here are the possible options:\n\n";
+        std::cout << "example_usage is a program that shows how to use libargvparse. Belo are the possible options\nCopyright (C) 2020  Asger Gitz-Johansen\n"
+                     "\n"
+                     "    This program is free software: you can redistribute it and/or modify\n"
+                     "    it under the terms of the GNU General Public License as published by\n"
+                     "    the Free Software Foundation, either version 3 of the License, or\n"
+                     "    (at your option) any later version.\n"
+                     "\n"
+                     "    This program is distributed in the hope that it will be useful,\n"
+                     "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+                     "    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+                     "    GNU General Public License for more details.\n"
+                     "\n"
+                     "    You should have received a copy of the GNU General Public License\n"
+                     "    along with this program.  If not, see <https://www.gnu.org/licenses/>.\n";
         print_argument_help(my_options);
         return EXIT_SUCCESS;
     }

@@ -45,3 +45,17 @@ int main(int argc, char** argv) {
 # Install
 
 For compiling this library, a C++17 compatible compiler is required. The library also uses standard library components, so if you don't like that feel free to submit a pull request with custom 'unordered_map', 'vector' and 'std::for_each' implementations.  
+
+```
+mkdir bin && cd bin
+cmake .. -DCMAKE_BUILD_TYPE=Release 
+sudo make install
+```
+
+For uninstall
+
+```
+xargs rm < install_manifest.txt
+```
+
+Or just manually delete the files listed in `install_manifest.txt`.

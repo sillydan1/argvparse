@@ -30,11 +30,11 @@ argument_t::argument_t(std::string _long_name, char _short_name, std::string _ar
 
 void argument_t::as_check() const {
     if(!m_enabled) {
-        std::stringstream ss{}; ss << "Argument " << long_name << " is not provided. Type --help or -h for help";
+        std::stringstream ss{}; ss << "Option " << long_name << " is not provided. Type --help or -h for help";
         throw std::runtime_error{ss.str()};
     }
     if(argval.empty()) {
-        std::stringstream ss{}; ss << "Argument " << long_name << " does not have an argument. Type --help or -h for help";
+        std::stringstream ss{}; ss << "Option " << long_name << " does not have an argument. Type --help or -h for help";
         throw std::runtime_error{ss.str()};
     }
 }

@@ -20,6 +20,7 @@
 #include <memory>
 #include <string>
 #include <algorithm>
+#include <iomanip>
 #include "arguments.h"
 
 argument_t::argument_t()
@@ -75,7 +76,10 @@ void add_help_option(std::vector<option_t>& options) {
 void print_argument_help(const std::vector<option_t>& options) {
     std::for_each(options.begin(),options.end(),
             [](const option_t& o) {
-                std::cout << " -" << o.short_option << ", --" << o.long_option << "\t|\t" << o.description << "\n";
+                std::stringstream lft{},rght{};
+                lft << " -" << o.short_option << ", --" << o.long_option;
+                rght << "| " << o.description;
+                printf("%-32s%-30s\n", lft.str().c_str(), rght.str().c_str());
             });
 }
 

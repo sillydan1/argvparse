@@ -54,5 +54,6 @@ public:
 
 std::map<std::string, argument_t> get_arguments(std::vector<option_t>& possible_options, int argc, char** argv);
 void print_argument_help(const std::vector<option_t>& options);
+void add_help_option(std::vector<option_t>& options);
 
 #endif //AUTOVERIF_ARGUMENTS_H

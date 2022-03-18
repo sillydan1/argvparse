@@ -16,15 +16,31 @@ int main(int argc, char** argv) {
     // The --help flag gets added automatically
     std::vector<option_t> my_options = {
     //   long name   |short| argument requirement             | Help description
-        {"flag"      , 'm', argument_requirement::NO_ARG      , "Flag with no argument"},
-        {"input-file", 'f', argument_requirement::REQUIRE_ARG , "Flag with a required argument"},
-        {"optimize"  , 'o', argument_requirement::OPTIONAL_ARG, "Flag with an optional argument"}
+        {"flag"      , 'a', argument_requirement::NO_ARG      , "Flag"},
+        {"input-file", 'f', argument_requirement::REQUIRE_ARG , "Argument"},
+        {"input-files",'F', argument_requirement::REQUIRE_ARG , "Argument that can be set multiple times (e.g. -F a -F b)"},
+        {"optimize"  , 'o', argument_requirement::OPTIONAL_ARG, "Flag or Argument"}
     };
     // Then call get_arguments
     auto cli_arguments = get_arguments(my_options, argc, argv);
     // If the help flag was provided, print out the help message
     if(cli_arguments["help"]) {
-        std::cout << "example_usage is a program that shows how to use libargvparse. Here are the possible options:\n\n";
+        std::cout << "Copyright (C) 2020  Asger Gitz-Johansen\n"
+                     "\n"
+                     "    This program is free software: you can redistribute it and/or modify\n"
+                     "    it under the terms of the GNU General Public License as published by\n"
+                     "    the Free Software Foundation, either version 3 of the License, or\n"
+                     "    (at your option) any later version.\n"
+                     "\n"
+                     "    This program is distributed in the hope that it will be useful,\n"
+                     "    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+                     "    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+                     "    GNU General Public License for more details.\n"
+                     "\n"
+                     "    You should have received a copy of the GNU General Public License\n"
+                     "    along with this program.  If not, see <https://www.gnu.org/licenses/>.\n"
+                     "================================================================================\n"
+                     "This is a program that shows how to use libargvparse. Below are the possible options\n\n";
         print_argument_help(my_options);
         return EXIT_SUCCESS;
     }
@@ -33,7 +49,12 @@ int main(int argc, char** argv) {
         // std::string flag_file = cli_arguments["flag"].as_string(); // Throws a runtime_exception, since there are no arguments on '--flag'
     }
     if(cli_arguments["input-file"]) {
-        std::string input_file = cli_arguments["input-file"].as_string();
+        std::cout << cli_arguments["input-file"].as_string() << std::endl;
+    }
+    if(cli_arguments["input-files"]) {
+        for(auto& el : cli_arguments["input-files"].as_list())
+            std::cout << el << " ";
+        std::cout << std::endl;
     }
     if(cli_arguments["optimize"]) {
         std::string optimize_strategy = cli_arguments["optimize"].as_string(); // Throws a runtime_exception if no flag was provided

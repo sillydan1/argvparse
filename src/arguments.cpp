@@ -22,19 +22,30 @@
 #include <algorithm>
 #include <iomanip>
 #include "arguments.h"
+#include <TextFlow.hpp>
 
 argument_t::argument_t()
-        : m_enabled{false}, long_name{}, argval{}, short_name{0} {}
+        : m_enabled{false}, long_name{}, argvals{}, short_name{0} {}
 
 argument_t::argument_t(std::string _long_name, char _short_name, std::string _argval)
-        : m_enabled{true}, long_name{std::move(_long_name)}, argval{std::move(_argval)}, short_name{_short_name} {}
+        : m_enabled{true}, long_name{std::move(_long_name)}, argvals{std::move(_argval)}, short_name{_short_name} {
+
+}
+
+void argument_t::add(const argument_t& other) {
+    long_name = other.long_name;
+    short_name = other.short_name;
+    m_enabled = other.m_enabled;
+    for(auto& a : other.argvals)
+        argvals.push_back(a);
+}
 
 void argument_t::as_check() const {
     if(!m_enabled) {
         std::stringstream ss{}; ss << "Option " << long_name << " is not provided. Type --help or -h for help";
         throw std::runtime_error{ss.str()};
     }
-    if(argval.empty()) {
+    if(argvals.empty()) {
         std::stringstream ss{}; ss << "Option " << long_name << " does not have an argument. Type --help or -h for help";
         throw std::runtime_error{ss.str()};
     }
@@ -42,12 +53,17 @@ void argument_t::as_check() const {
 
 std::string argument_t::as_string() const {
     as_check();
-    return argval;
+    return argvals[0];
+}
+
+std::vector<std::string> argument_t::as_list() const {
+    as_check();
+    return argvals;
 }
 
 int argument_t::as_integer() const {
     as_check();
-    return stoi(argval);
+    return stoi(argvals[0]);
 }
 
 std::string get_optstring(const std::vector<option_t>& options) {
@@ -73,32 +89,78 @@ void add_help_option(std::vector<option_t>& options) {
     options.push_back({"help", 'h', argument_requirement::NO_ARG, "Print this message"});
 }
 
+static bool option_len_compare(const option_t& a, const option_t& b) {
+    return strlen(a.long_option) < strlen(b.long_option);
+}
+
+size_t get_max_option_length(const std::vector<option_t>& options) {
+    return strlen(std::max_element(options.begin(), options.end(), option_len_compare)->long_option);
+}
+
 void print_argument_help(const std::vector<option_t>& options) {
+    auto extra_padding = 13; // "--" on long option + " -x, " on short options + " <val> " on arguments
+    auto max_left = get_max_option_length(options) + extra_padding;
     std::for_each(options.begin(),options.end(),
-            [](const option_t& o) {
+            [&max_left](const option_t& o) {
                 std::stringstream lft{},rght{};
                 lft << " -" << o.short_option << ", --" << o.long_option;
+                if(o.needs_argument > argument_requirement::NO_ARG)
+                    lft << " <val>";
                 rght << "| " << o.description;
-                printf("%-32s%-30s\n", lft.str().c_str(), rght.str().c_str());
+
+                auto l = TextFlow::Column(lft.str()).width(max_left);
+                auto r = TextFlow::Column(rght.str()).width(80-max_left-1);
+                auto layout = l + TextFlow::Spacer(1) + r;
+                std::cout << layout << std::endl;
             });
+}
+
+void sort_short_options(std::vector<option_t>& options) {
+    std::sort(options.begin(), options.end(), [](const option_t& a, const option_t& b){
+        return a.short_option < b.short_option;
+    });
+}
+
+void sort_long_options(std::vector<option_t>& options) {
+    std::sort(options.begin(), options.end(), [](const option_t& a, const option_t& b){
+        return std::string(a.long_option) < b.long_option;
+    });
+}
+
+void ensure_non_colliding_options(std::vector<option_t>& options) {
+    sort_short_options(options);
+    auto found = std::adjacent_find(options.begin(), options.end(), [](const option_t& a, const option_t& b){
+        return a.short_option == b.short_option;
+    });
+    if(found != options.end())
+        throw std::logic_error(std::string("Duplicate short option: ") + found->short_option);
+
+    sort_long_options(options);
+    found = std::adjacent_find(options.begin(), options.end(), [](const option_t& a, const option_t& b){
+        return strcmp(a.long_option, b.long_option) == 0;
+    });
+    if(found != options.end())
+        throw std::logic_error(std::string("Duplicate long option: ") + found->long_option);
 }
 
 std::map<std::string, argument_t> get_arguments(std::vector<option_t>& possible_options, int argc, char** argv) {
     add_help_option(possible_options);
+    auto opts = possible_options;
+    ensure_non_colliding_options(opts);
     std::map<std::string, argument_t> arguments{};
-    int option_index                = 0;
-    auto long_opts                  = get_long_options(possible_options);
-    std::string optstring           = get_optstring(possible_options);
+    int option_index = 0;
+    auto long_opts = get_long_options(possible_options);
+    auto optstring = get_optstring(possible_options);
     int c = 0;
     while(c != -1) {
         c = getopt_long(argc, argv, optstring.c_str(), long_opts.get(), &option_index);
         auto element = std::find_if(possible_options.begin(), possible_options.end(),
                                  [&c](const option_t &o) { return o.short_option == c; });
         if (element != possible_options.end())
-            arguments[element->long_option] = argument_t(
+            arguments[element->long_option].add(argument_t(
                     element->long_option,
                     element->short_option,
-                    element->needs_argument >= argument_requirement::REQUIRE_ARG ? optarg == NULL ? "" : optarg : "");
+                    element->needs_argument >= argument_requirement::REQUIRE_ARG ? optarg == NULL ? "" : optarg : ""));
     }
     return arguments;
 }

@@ -41,14 +41,16 @@ struct option_t {
 class argument_t {
     bool m_enabled;
     std::string long_name;
-    std::string argval;
+    std::vector<std::string> argvals;
     char short_name;
     void as_check() const;
 public:
     argument_t();
-    argument_t(std::string  _long_name, char _short_name, std::string  _argval);
+    argument_t(std::string  _long_name, char _short_name, std::string _argval);
+    void add(const argument_t& other);
     explicit operator bool() const { return m_enabled; }
     [[nodiscard]] std::string as_string() const;
+    [[nodiscard]] std::vector<std::string> as_list() const;
     [[nodiscard]] int as_integer() const;
 };
 

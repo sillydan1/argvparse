@@ -23,6 +23,7 @@
 #include <map>
 #include <getopt.h>
 #include <sstream>
+#include <cstring>
 
 enum class argument_requirement {
     NO_ARG = 0,

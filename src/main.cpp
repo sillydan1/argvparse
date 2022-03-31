@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
     //   long name   |short| argument requirement             | Help description
         {"flag"      , 'a', argument_requirement::NO_ARG      , "Flag"},
         {"input-file", 'f', argument_requirement::REQUIRE_ARG , "Argument"},
-        {"input-files",'F', argument_requirement::REQUIRE_ARG , "Argument that can be set multiple times (e.g. -F a -F b)"},
+        {"input-files",'F', argument_requirement::REQUIRE_ARG , "Argument that can be set multiple times (-F a -F b)"},
         {"optimize"  , 'o', argument_requirement::OPTIONAL_ARG, "Flag or Argument"}
     };
     // Then call get_arguments

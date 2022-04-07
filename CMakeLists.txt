@@ -14,7 +14,7 @@
 #  You should have received a copy of the GNU General Public License
 #  along with libargvparse.  If not, see <https://www.gnu.org/licenses/>.
 cmake_minimum_required(VERSION 3.12)
-project(argvparse VERSION 1.2.1)
+project(argvparse VERSION 1.2.2)
 include(cmake/CPM.cmake)
 
 CPMAddPackage("gh:catchorg/textflowcpp#master")

@@ -51,12 +51,16 @@ public:
     void add(const argument_t& other);
     explicit operator bool() const { return m_enabled; }
     [[nodiscard]] std::string as_string() const;
+    [[nodiscard]] std::string as_string_or_default(const std::string&) const;
     [[nodiscard]] std::vector<std::string> as_list() const;
+    [[nodiscard]] std::vector<std::string> as_list_or_default(const std::vector<std::string>&) const;
     [[nodiscard]] int as_integer() const;
+    [[nodiscard]] int as_integer_or_default(const int&) const;
 };
 
 std::map<std::string, argument_t> get_arguments(std::vector<option_t>& possible_options, int argc, char** argv);
 void print_argument_help(const std::vector<option_t>& options);
+std::ostream& operator<<(std::ostream& stream, const std::vector<option_t>& options);
 void add_help_option(std::vector<option_t>& options);
 
 #endif //AUTOVERIF_ARGUMENTS_H

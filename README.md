@@ -1,13 +1,12 @@
 # argvparse
-A tiny C++ library for easier parsing of command line arguments
+A C++ library for easier parsing of command line arguments
 
 # Example Usage
-
 Using argvparse is easy. You just define a list of desired arguments with a description and then you call `auto myargs = get_arguments(possible_arguments, argc, argv);`. You can then check if an argument has been provided by looking up the results like so: `myargs["long-name-look-up"]`. The result from `get_arguments` is a hashmap where the long name of the argument is the key.
 
 Longer example. This example is also available as a build target: `make example_usage`
 
-```C++
+```c++
 #include <iostream>
 #include "arguments.h"
 
@@ -18,7 +17,7 @@ int main(int argc, char** argv) {
     //   long name   |short| argument requirement             | Help description
         {"flag"      , 'a', argument_requirement::NO_ARG      , "Flag"},
         {"input-file", 'f', argument_requirement::REQUIRE_ARG , "Argument"},
-        {"input-files",'F', argument_requirement::REQUIRE_ARG , "Argument that can be set multiple times (e.g. -F a -F b)"},
+        {"input-files",'F', argument_requirement::REQUIRE_ARG , "Argument that can be set multiple times (-F a -F b)"},
         {"optimize"  , 'o', argument_requirement::OPTIONAL_ARG, "Flag or Argument"}
     };
     // Then call get_arguments
@@ -40,52 +39,49 @@ int main(int argc, char** argv) {
                      "    You should have received a copy of the GNU General Public License\n"
                      "    along with this program.  If not, see <https://www.gnu.org/licenses/>.\n"
                      "================================================================================\n"
-                     "This is a program that shows how to use libargvparse. Below are the possible options\n\n";
-        print_argument_help(my_options);
+                     "This is a program that shows how to use libargvparse. Below are the possible options\n\n"
+                  << my_options;
         return EXIT_SUCCESS;
     }
     // You can test if an argument was provided by simply testing for the long name
-    if(cli_arguments["flag"]) {
-        // std::string flag_file = cli_arguments["flag"].as_string(); // Throws a runtime_exception, since there are no arguments on '--flag'
-    }
-    if(cli_arguments["input-file"]) {
+    if(cli_arguments["flag"])
+        std::string flag_file = cli_arguments["flag"].as_string(); // Throws a runtime_exception, since there are no arguments on '--flag'
+
+    if(cli_arguments["input-file"])
         std::cout << cli_arguments["input-file"].as_string() << std::endl;
-    }
+
     if(cli_arguments["input-files"]) {
         for(auto& el : cli_arguments["input-files"].as_list())
             std::cout << el << " ";
         std::cout << std::endl;
     }
-    if(cli_arguments["optimize"]) {
+
+    if(cli_arguments["optimize"])
         std::string optimize_strategy = cli_arguments["optimize"].as_string(); // Throws a runtime_exception if no flag was provided
-    }
+
+    // If you don't want to have the pesky if-statement, there's a variant of as_X:
+    // Throws a runtime_exception if flag was provided, but no value. If the flag is not provided, then default value is returned.
+    auto my_value = cli_arguments["input-file"].as_string_or_default("default_file_name.txt");
+    std::cout << my_value << std::endl;
     return EXIT_SUCCESS;
 }
 ```
 
 # Install
-
-For compiling this library, a C++17 compatible compiler is required. The library also uses standard library components, so if you don't like that feel free to submit a pull request with custom 'unordered_map', 'vector' and 'std::for_each' implementations.  
-
+For compiling this library, a C++17 compatible compiler is required. The library also uses standard library components, so if you don't like that feel free to submit a pull request with custom 'unordered_map', 'vector' and 'std::for_each' implementations.
 ```
 mkdir bin && cd bin
 cmake .. -DCMAKE_BUILD_TYPE=Release 
 sudo make install
 ```
-
 For uninstall
-
 ```
 xargs rm < install_manifest.txt
 ```
-
 Or just manually delete the files listed in `install_manifest.txt`. They are likely these:
-
 ```
 /usr/local/lib/libargvparse.so
 /usr/local/include/arguments.h
 ```
-
-# Author(s)
-
+## Author
  - [sillydan1](https://github.com/sillydan1)

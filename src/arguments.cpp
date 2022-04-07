@@ -56,14 +56,32 @@ std::string argument_t::as_string() const {
     return argvals[0];
 }
 
+std::string argument_t::as_string_or_default(const std::string& default_value) const {
+    if(m_enabled)
+        return as_string();
+    return default_value;
+}
+
 std::vector<std::string> argument_t::as_list() const {
     as_check();
     return argvals;
 }
 
+std::vector<std::string> argument_t::as_list_or_default(const std::vector<std::string>& default_value) const {
+    if(m_enabled)
+        return as_list();
+    return default_value;
+}
+
 int argument_t::as_integer() const {
     as_check();
     return stoi(argvals[0]);
+}
+
+int argument_t::as_integer_or_default(const int& default_value) const {
+    if(m_enabled)
+        return as_integer();
+    return default_value;
 }
 
 std::string get_optstring(const std::vector<option_t>& options) {
@@ -98,21 +116,26 @@ size_t get_max_option_length(const std::vector<option_t>& options) {
 }
 
 void print_argument_help(const std::vector<option_t>& options) {
+    std::cout << options;
+}
+
+std::ostream& operator<<(std::ostream& stream, const std::vector<option_t>& options) {
     auto extra_padding = 13; // "--" on long option + " -x, " on short options + " <val> " on arguments
     auto max_left = get_max_option_length(options) + extra_padding;
     std::for_each(options.begin(),options.end(),
-            [&max_left](const option_t& o) {
-                std::stringstream lft{},rght{};
-                lft << " -" << o.short_option << ", --" << o.long_option;
-                if(o.needs_argument > argument_requirement::NO_ARG)
-                    lft << " <val>";
-                rght << "| " << o.description;
+                  [&max_left, &stream](const option_t& o) {
+                      std::stringstream lft{},rght{};
+                      lft << " -" << o.short_option << ", --" << o.long_option;
+                      if(o.needs_argument > argument_requirement::NO_ARG)
+                          lft << " <val>";
+                      rght << "| " << o.description;
 
-                auto l = TextFlow::Column(lft.str()).width(max_left);
-                auto r = TextFlow::Column(rght.str()).width(80-max_left-1);
-                auto layout = l + TextFlow::Spacer(1) + r;
-                std::cout << layout << std::endl;
-            });
+                      auto l = TextFlow::Column(lft.str()).width(max_left);
+                      auto r = TextFlow::Column(rght.str()).width(80-max_left-1);
+                      auto layout = l + TextFlow::Spacer(1) + r;
+                      stream << layout << "\n";
+                  });
+    return stream;
 }
 
 void sort_short_options(std::vector<option_t>& options) {

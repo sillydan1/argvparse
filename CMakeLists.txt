@@ -20,6 +20,7 @@ include(cmake/CPM.cmake)
 CPMAddPackage("gh:catchorg/textflowcpp#master")
 include_directories(
         ${textflowcpp_SOURCE_DIR}
+        src
 )
 
 set(CMAKE_CXX_STANDARD 17)

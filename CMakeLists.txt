@@ -30,3 +30,4 @@ target_link_libraries(example_usage argvparse)
 
 install(TARGETS argvparse DESTINATION lib)
 install(FILES src/arguments.h DESTINATION include)
+

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2020 Asger Gitz-Johansen
+ * Copyright (C) 2023 Asger Gitz-Johansen
 
    This file is part of libargvparse.
 
@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
     auto cli_arguments = get_arguments(my_options, argc, argv);
     // If the help flag was provided, print out the help message
     if(cli_arguments["help"]) {
-        std::cout << "Copyright (C) 2020  Asger Gitz-Johansen\n"
+        std::cout << "Copyright (C) 2023  Asger Gitz-Johansen\n"
                      "\n"
                      "    This program is free software: you can redistribute it and/or modify\n"
                      "    it under the terms of the GNU General Public License as published by\n"

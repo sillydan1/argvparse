@@ -1,4 +1,4 @@
-# Copyright (C) 2020 Asger Gitz-Johansen
+# Copyright (C) 2023 Asger Gitz-Johansen
 # This file is part of libargvparse.
 #
 #  libargvparse is free software: you can redistribute it and/or modify
